@@ -1,0 +1,2106 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bones of the Human Body – Part I | Interactive Anatomy Study Platform</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans (English LTR) & Cairo (Arabic RTL) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            arabic: ['"Cairo"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            med: {
+              navy: '#0f172a',
+              deep: '#1e3a8a',
+              blue: '#2563eb',
+              soft: '#eff6ff',
+              teal: '#0d9488',
+              tealLight: '#f0fdfa',
+              slate: '#f8fafc'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Academic Medical Styling & Smooth Transitions */
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .arabic-text {
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+      text-align: right;
+      line-height: 1.85;
+    }
+
+    /* Smooth accordion animation for translation blocks */
+    .translation-collapse {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+      opacity: 0;
+    }
+
+    .translation-collapse.open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    .translation-inner {
+      overflow: hidden;
+    }
+
+    /* Custom Scrollbar for Sidebar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Highlighted search term styling */
+    mark.search-highlight {
+      background-color: #fef08a;
+      color: #0f172a;
+      padding: 0 3px;
+      border-radius: 4px;
+      font-weight: 600;
+      box-shadow: 0 0 0 1px #fde047;
+    }
+
+    /* Hide translation controls when Pure English mode is active */
+    body.hide-translations .translation-control-wrapper {
+      display: none !important;
+    }
+
+    /* Reading mode adjustments */
+    body.reading-mode #sidebar-container {
+      display: none !important;
+    }
+    body.reading-mode #main-content-column {
+      max-width: 54rem !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+    body.reading-mode .study-toolbar-extra {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
+
+  <!-- TOP SCROLL & STUDY PROGRESS BAR -->
+  <div class="fixed top-0 left-0 right-0 z-50 h-1 bg-slate-200">
+    <div id="scroll-progress-bar" class="h-full bg-gradient-to-r from-blue-700 via-blue-500 to-teal-500 transition-all duration-150" style="width: 0%;"></div>
+  </div>
+
+  <!-- STICKY NAVIGATION HEADER -->
+  <header class="sticky top-1 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-wrap items-center justify-between gap-3 py-3">
+        
+        <!-- Left: Mobile TOC Button + Brand / Lecture Title -->
+        <div class="flex items-center gap-3">
+          <button id="mobile-menu-btn" type="button" aria-label="Toggle Table of Contents"
+            class="lg:hidden inline-flex items-center justify-center p-2 rounded-xl text-slate-700 hover:bg-slate-100 hover:text-blue-700 focus:outline-none border border-slate-200 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10"/>
+            </svg>
+          </button>
+
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 via-blue-900 to-teal-700 flex items-center justify-center text-white shadow-sm shrink-0">
+              <!-- Bone / Anatomy Medical Icon -->
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.5 6.5a2.5 2.5 0 10-3.5-3.5 2.5 2.5 0 00-.5 2.8L6.3 13a2.5 2.5 0 00-2.8.5 2.5 2.5 0 103.5 3.5 2.5 2.5 0 103.5 3.5 2.5 2.5 0 00.5-2.8l7.2-7.2a2.5 2.5 0 002.8-.5 2.5 2.5 0 10-3.5-3.5z" />
+              </svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200/60">Anatomy Lecture I</span>
+                <span class="hidden sm:inline-flex items-center text-xs text-slate-500 font-medium">
+                  • Yassmen Salam (Senior Radiologist)
+                </span>
+              </div>
+              <h1 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight leading-snug">
+                Bones of the Human Body – Part I
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center: Search Input -->
+        <div class="flex-1 max-w-md mx-auto w-full order-3 md:order-2">
+          <div class="relative">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input
+              id="anatomical-search"
+              type="text"
+              placeholder="Search anatomical terms (e.g., synovial, atlas, femur, ligament)..."
+              class="w-full pl-10 pr-20 py-2 text-sm bg-slate-100/90 hover:bg-slate-100 focus:bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+            />
+            <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+              <span id="search-count-badge" class="hidden text-[11px] font-semibold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">0</span>
+              <button id="clear-search-btn" type="button" class="hidden p-1 text-slate-400 hover:text-slate-600 rounded-lg" title="Clear search">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Study Progress & Mode Controls -->
+        <div class="flex items-center gap-2 order-2 md:order-3">
+          <!-- Reviewed Progress Pill -->
+          <div class="hidden sm:flex items-center gap-2.5 bg-slate-50 border border-slate-200/90 px-3 py-1.5 rounded-xl" title="Sections marked as reviewed">
+            <div class="flex flex-col">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Reviewed</span>
+                <span id="reviewed-counter-text" class="text-xs font-bold text-teal-700">0 / 20</span>
+              </div>
+              <div class="w-24 h-1.5 bg-slate-200 rounded-full overflow-hidden mt-0.5">
+                <div id="reviewed-progress-bar" class="h-full bg-teal-600 transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reading Mode Button -->
+          <button id="reading-mode-btn" type="button"
+            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition shadow-2xs"
+            title="Toggle distraction-free Reading Mode">
+            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            <span class="hidden xl:inline" id="reading-mode-label">Reading Mode</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- SECONDARY ACTION BAR: Translation Controls & Section Filters -->
+      <div class="flex flex-wrap items-center justify-between gap-2 py-2 border-t border-slate-100 text-xs">
+        <!-- Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto py-0.5">
+          <span class="text-slate-400 font-semibold mr-1 hidden sm:inline">View:</span>
+          <button type="button" data-filter="all" class="filter-tab-btn active-filter px-2.5 py-1 rounded-lg font-semibold bg-slate-900 text-white transition">
+            All Sections <span id="count-all" class="ml-1 opacity-80">(20)</span>
+          </button>
+          <button type="button" data-filter="bookmarked" class="filter-tab-btn px-2.5 py-1 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
+            </svg>
+            Bookmarked <span id="count-bookmarked">(0)</span>
+          </button>
+          <button type="button" data-filter="unreviewed" class="filter-tab-btn px-2.5 py-1 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+            Unreviewed <span id="count-unreviewed">(20)</span>
+          </button>
+          <button type="button" data-filter="diagrams" class="filter-tab-btn px-2.5 py-1 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            Image Placeholders <span>(5)</span>
+          </button>
+        </div>
+
+        <!-- Global Arabic Translation Controls -->
+        <div class="flex flex-wrap items-center gap-1.5 ml-auto">
+          <button id="expand-all-arabic-btn" type="button"
+            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold bg-blue-50 text-blue-800 hover:bg-blue-100 border border-blue-200/70 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+            Expand All Arabic
+          </button>
+          <button id="collapse-all-arabic-btn" type="button"
+            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+            </svg>
+            Collapse All Arabic
+          </button>
+          <button id="toggle-translation-buttons-btn" type="button"
+            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition"
+            title="Hide or show Arabic translation controls across the lecture">
+            <span id="toggle-translation-buttons-label">Hide Arabic Controls</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE SIDEBAR DRAWER OVERLAY -->
+  <div id="mobile-drawer-backdrop" class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-xs hidden lg:hidden"></div>
+
+  <!-- MAIN WORKSPACE CONTAINER -->
+  <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-1 flex gap-8 items-start">
+
+    <!-- LEFT SIDEBAR: TABLE OF CONTENTS & STUDY STATS -->
+    <aside id="sidebar-container"
+      class="fixed lg:sticky top-16 lg:top-28 left-0 z-40 w-80 lg:w-72 xl:w-80 h-[calc(100vh-4rem)] lg:h-[calc(100vh-8rem)] bg-white lg:bg-transparent border-r lg:border-r-0 border-slate-200 p-4 lg:p-0 overflow-y-auto -translate-x-full lg:translate-x-0 transition-transform duration-300 shrink-0">
+      
+      <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-4 flex flex-col h-full">
+        <!-- Sidebar Header -->
+        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-teal-500"></span>
+            <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Lecture Contents</h2>
+          </div>
+          <button id="close-mobile-menu-btn" type="button" class="lg:hidden p-1 text-slate-400 hover:text-slate-700 rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Navigation Links List -->
+        <nav id="toc-nav-list" aria-label="Lecture Sections" class="flex-1 overflow-y-auto pr-1 space-y-1">
+          <!-- Populated dynamically via JS -->
+        </nav>
+
+        <!-- Sidebar Footer: Reset Progress -->
+        <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+          <span id="sidebar-completion-summary">0% Completed</span>
+          <button id="reset-progress-btn" type="button" class="text-slate-400 hover:text-red-600 font-medium transition">
+            Reset Study Data
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT / MAIN CONTENT COLUMN -->
+    <main id="main-content-column" class="flex-1 min-w-0 space-y-6 pb-20">
+
+      <!-- LECTURE HEADER BANNER CARD -->
+      <section class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden border border-slate-800">
+        <!-- Subtle Decorative Anatomical Grid Overlay -->
+        <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+          <svg class="w-64 h-64 text-teal-300" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="50" cy="50" r="40" stroke-dasharray="4 4"/>
+            <circle cx="50" cy="50" r="28"/>
+            <line x1="50" y1="5" x2="50" y2="95"/>
+            <line x1="5" y1="50" x2="95" y2="50"/>
+          </svg>
+        </div>
+
+        <div class="relative z-10">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-200 text-xs font-semibold mb-3">
+                <span>Radiology & Human Anatomy Module</span>
+                <span>•</span>
+                <span>20 Topics & 10 Diagram Placeholders</span>
+              </div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                Bones of the Human Body
+              </h2>
+              <p class="mt-2 text-blue-100 text-sm sm:text-base font-medium flex flex-wrap items-center gap-2">
+                <span>Lecturer: <strong class="text-white font-bold">Yassmen Salam</strong></span>
+                <span class="text-blue-400">•</span>
+                <span class="text-teal-300 font-semibold">Senior Radiologist</span>
+              </p>
+            </div>
+
+            <!-- Lecture Title Card Arabic Translation Toggle -->
+            <div class="translation-control-wrapper">
+              <button type="button" onclick="toggleTranslation('header-trans')" id="btn-header-trans"
+                class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition cursor-pointer">
+                <svg class="w-4 h-4 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                </svg>
+                <span class="btn-label">Show Arabic Translation</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Expandable Arabic Header Info -->
+          <div id="header-trans" class="translation-collapse mt-3">
+            <div class="translation-inner">
+              <div class="arabic-text bg-slate-950/60 border border-teal-500/30 rounded-xl p-4 text-teal-50 mt-2">
+                <div class="text-xl font-bold text-white">عظام جسم الإنسان</div>
+                <div class="text-sm text-teal-200 mt-1">
+                  <span class="font-semibold">ياسمين سلام</span> — <span>أخصائية أشعة</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EMPTY FILTER STATE MESSAGE (Hidden by default) -->
+      <div id="empty-filter-state" class="hidden bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-xs">
+        <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto mb-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800" id="empty-state-title">No matching sections found</h3>
+        <p class="text-sm text-slate-500 mt-1" id="empty-state-subtitle">Try clearing your search filter or switching back to "All Sections".</p>
+        <button type="button" onclick="resetFiltersAndSearch()"
+          class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition">
+          Show All Lecture Sections
+        </button>
+      </div>
+
+      <!-- LECTURE SECTIONS CONTAINER -->
+      <div id="lecture-sections-container" class="space-y-8">
+        <!-- Rendered dynamically from complete structured lecture dataset -->
+      </div>
+
+    </main>
+  </div>
+
+  <!-- FLOATING BACK TO TOP BUTTON -->
+  <button id="back-to-top-btn" type="button" aria-label="Back to top"
+    class="fixed bottom-6 right-6 z-40 p-3 rounded-2xl bg-slate-900 text-white shadow-lg border border-slate-700 hover:bg-blue-700 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/>
+    </svg>
+  </button>
+
+  <!-- CUSTOM RESET CONFIRMATION MODAL (No browser confirm() used) -->
+  <div id="reset-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Reset Study Progress?</h3>
+          <p class="text-xs text-slate-500">This will clear your bookmarks, reviewed sections, and uploaded diagram images stored in this browser.</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 mt-6">
+        <button id="cancel-reset-btn" type="button" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          Cancel
+        </button>
+        <button id="confirm-reset-btn" type="button" class="px-4 py-2 rounded-xl text-xs font-semibold bg-red-600 text-white hover:bg-red-700 transition">
+          Reset Everything
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-6 left-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- APPLICATION JAVASCRIPT & COMPLETE LECTURE DATA -->
+  <script>
+    /**
+     * COMPLETE LECTURE CONTENT DATASET
+     * Strictly preserves every original English and Arabic line, order, and image terminology block
+     * from "Bones of the Human Body – Part I" by Yassmen Salam.
+     */
+    const LECTURE_SECTIONS = [
+      {
+        id: 'sec-1',
+        number: 1,
+        titleEn: 'Classification of Bones',
+        titleAr: 'تصنيف العظام',
+        category: 'Skeletal System Overview',
+        blocks: [
+          {
+            id: 'b-1-1',
+            headingEn: 'Classification of Bones',
+            headingAr: 'تصنيف العظام',
+            itemsEn: [
+              { term: 'Long bones' },
+              { term: 'Short bones' },
+              { term: 'Flat bones' },
+              { term: 'Irregular bones' },
+              { term: 'Sesamoid bones' }
+            ],
+            noteEn: 'According to general shape.',
+            itemsAr: [
+              'العظام الطويلة',
+              'العظام القصيرة',
+              'العظام المسطحة',
+              'العظام غير المنتظمة',
+              'العظام السمسمية'
+            ],
+            noteAr: 'حسب الشكل العام.'
+          }
+        ],
+        imagePlaceholder: {
+          id: 'img-slide-3', slideRef: 'Slide 3', captionEn: 'Types of Bones', captionAr: 'صورة الشريحة 3 – أنواع العظام',
+          labels: [{ en: 'Long bones', ar: 'العظام الطويلة' }, { en: 'Short bones', ar: 'العظام القصيرة' }, { en: 'Flat bones', ar: 'العظام المسطحة' }, { en: 'Irregular bones', ar: 'العظام غير المنتظمة' }, { en: 'Sesamoid bones', ar: 'العظام السمسمية' }]
+        }
+      },
+      {
+        id: 'sec-2',
+        number: 2,
+        titleEn: 'Axial Skeleton',
+        titleAr: 'الهيكل المحوري',
+        category: 'Major Skeletal Divisions',
+        blocks: [
+          {
+            id: 'b-2-1',
+            headingEn: 'Axial skeleton',
+            badgeEn: '80 bones',
+            headingAr: 'الهيكل المحوري',
+            badgeAr: '80 عظمة',
+            itemsEn: [
+              { term: 'Cranium' },
+              { term: 'Spine' },
+              { term: 'Ribs' },
+              { term: 'Sternum' }
+            ],
+            itemsAr: [
+              'الجمجمة',
+              'العمود الفقري',
+              'الأضلاع',
+              'عظم القص'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-3',
+        number: 3,
+        titleEn: 'Appendicular Skeleton',
+        titleAr: 'الهيكل الطرفي',
+        category: 'Major Skeletal Divisions',
+        blocks: [
+          {
+            id: 'b-3-1',
+            headingEn: 'Appendicular skeleton',
+            badgeEn: '126 bones',
+            headingAr: 'الهيكل الطرفي',
+            badgeAr: '126 عظمة',
+            itemsEn: [
+              { term: 'Shoulder' },
+              { term: 'Arm' },
+              { term: 'Elbow' },
+              { term: 'Hand' },
+              { term: 'Pelvis' },
+              { term: 'Leg' },
+              { term: 'Knee' },
+              { term: 'Ankle' },
+              { term: 'Foot' }
+            ],
+            itemsAr: [
+              'الكتف',
+              'الذراع',
+              'المرفق',
+              'اليد',
+              'الحوض',
+              'الساق',
+              'الركبة',
+              'الكاحل',
+              'القدم'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-4',
+        number: 4,
+        titleEn: 'Bones of the Human Body',
+        titleAr: 'عظام جسم الإنسان',
+        category: 'Key Anatomical Facts',
+        blocks: [
+          {
+            id: 'b-4-1',
+            paragraphsEn: [
+              "More than half of the body's 206 bones are in the upper limb and lower limb."
+            ],
+            paragraphsAr: [
+              "أكثر من نصف عظام جسم الإنسان البالغ، والبالغ عددها 206 عظمة، تقع في الطرف العلوي والطرف السفلي."
+            ]
+          },
+          {
+            id: 'b-4-2',
+            paragraphsEn: [
+              "The skull is composed of 29 different bones."
+            ],
+            paragraphsAr: [
+              "تتكوّن الجمجمة من 29 عظمة مختلفة."
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-5',
+        number: 5,
+        titleEn: 'The Foot',
+        titleAr: 'القدم',
+        category: 'Lower Limb Anatomy',
+        blocks: [
+          {
+            id: 'b-5-1',
+            headingEn: 'The Foot',
+            headingAr: 'القدم',
+            itemsEn: [
+              { term: 'Phalanges', desc: 'toes' },
+              { term: 'Metatarsals', desc: 'foot' },
+              { term: 'Tarsals', desc: 'ankle' }
+            ],
+            itemsAr: [
+              'السلاميات – أصابع القدم',
+              'عظام مشط القدم',
+              'عظام الرُّصغ – منطقة الكاحل'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-6',
+        number: 6,
+        titleEn: 'The Leg',
+        titleAr: 'الساق',
+        category: 'Lower Limb Anatomy',
+        blocks: [
+          {
+            id: 'b-6-1',
+            headingEn: 'The Leg',
+            headingAr: 'الساق',
+            itemsEn: [
+              { term: 'Fibula', desc: 'small lower' },
+              { term: 'Tibia', desc: 'large lower' },
+              { term: 'Patella', desc: 'knee' },
+              { term: 'Femur', desc: 'upper' },
+              { term: 'Pelvis', desc: 'the hip' }
+            ],
+            itemsAr: [
+              'الشظية – العظم الصغير في الجزء السفلي من الساق',
+              'القصبة (الظنبوب) – العظم الكبير في الجزء السفلي من الساق',
+              'الرُّضفة – عظم الركبة',
+              'عظم الفخذ – العظم الموجود في الجزء العلوي من الطرف السفلي',
+              'الحوض – منطقة الورك'
+            ]
+          }
+        ],
+        imagePlaceholder: {
+          id: 'img-slide-8', slideRef: 'Slide 8', captionEn: 'Leg Bones', captionAr: 'صورة الشريحة 8 – عظام الساق',
+          labels: [{ en: 'Hip', ar: 'الحوض' }, { en: 'Femur', ar: 'عظم الفخذ' }, { en: 'Knee', ar: 'الركبة' }, { en: 'Patella', ar: 'الرضفة' }, { en: 'Tibia', ar: 'الظنبوب' }, { en: 'Fibula', ar: 'الشظية' }]
+        }
+      },
+      {
+        id: 'sec-7',
+        number: 7,
+        titleEn: 'The Hand',
+        titleAr: 'اليد',
+        category: 'Upper Limb Anatomy',
+        blocks: [
+          {
+            id: 'b-7-1',
+            headingEn: 'The Hand',
+            headingAr: 'اليد',
+            itemsEn: [
+              { term: 'Phalanges', desc: 'fingers' },
+              { term: 'Metacarpals', desc: 'hand' },
+              { term: 'Carpals', desc: 'wrist bones' }
+            ],
+            itemsAr: [
+              'السلاميات – أصابع اليد',
+              'عظام مشط اليد',
+              'عظام الرسغ'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-8',
+        number: 8,
+        titleEn: 'The Forearm',
+        titleAr: 'الساعد',
+        category: 'Upper Limb Anatomy',
+        blocks: [
+          {
+            id: 'b-8-1',
+            headingEn: 'The Forearm',
+            headingAr: 'الساعد',
+            itemsEn: [
+              { term: 'Radius', desc: 'thumb side lower' },
+              { term: 'Ulna', desc: 'finger side lower' },
+              { term: 'Humerus', desc: 'Arm' }
+            ],
+            itemsAr: [
+              'الكَعبرة – العظم السفلي الموجود في جهة الإبهام',
+              'الزند – العظم السفلي الموجود في الجهة المقابلة للإبهام',
+              'عظم العضد – عظم الذراع'
+            ]
+          }
+        ],
+        imagePlaceholder: {
+          id: 'img-slide-10', slideRef: 'Slide 10', captionEn: 'Bones of the Arm and Hand', captionAr: 'صورة الشريحة 10 – عظام الذراع واليد',
+          labels: [{ en: 'Humerus', ar: 'عظم العضد' }, { en: 'Radius', ar: 'الكعبرة' }, { en: 'Carpals', ar: 'عظام الرسغ' }, { en: 'Metacarpals', ar: 'عظام مشط اليد' }, { en: 'Phalanges', ar: 'السلاميات' }]
+        }
+      },
+      {
+        id: 'sec-9',
+        number: 9,
+        titleEn: 'The Chest',
+        titleAr: 'الصدر',
+        category: 'Thorax & Shoulder Girdle',
+        blocks: [
+          {
+            id: 'b-9-1',
+            headingEn: 'The Chest',
+            headingAr: 'الصدر',
+            itemsEn: [
+              { term: 'Sternum' },
+              { term: 'Ribs', desc: '12 pairs', subNote: 'Named by side and number on each side.' },
+              { term: 'Clavicle', desc: 'collar' },
+              { term: 'Scapula', desc: 'shoulder' }
+            ],
+            itemsAr: [
+              'عظم القص',
+              'الأضلاع – 12 زوجاً (تُسمّى حسب الجانب ورقم كل ضلع على ذلك الجانب.)',
+              'الترقوة – عظم منطقة الترقوة',
+              'لوح الكتف – عظم الكتف'
+            ]
+          }
+        ],
+        imagePlaceholder: {
+          id: 'img-slide-14', slideRef: 'Slide 14', captionEn: 'Bones of the Chest', captionAr: 'صورة الشريحة 14 – عظام الصدر',
+          labels: [{ en: 'Sternum', ar: 'عظم القص' }, { en: 'True ribs', ar: 'الأضلاع الحقيقية' }, { en: 'False ribs', ar: 'الأضلاع الكاذبة' }, { en: 'Clavicle', ar: 'الترقوة' }, { en: 'Scapula', ar: 'لوح الكتف' }]
+        }
+      },
+      {
+        id: 'sec-10',
+        number: 10,
+        titleEn: 'The Skull',
+        titleAr: 'الجمجمة',
+        category: 'Cranial & Facial Bones',
+        blocks: [
+          {
+            id: 'b-10-1',
+            headingEn: 'The Skull',
+            headingAr: 'الجمجمة',
+            itemsEn: [
+              { term: 'Maxilla', desc: 'upper jaw' },
+              { term: 'Mandible', desc: 'lower jaw' },
+              { term: 'Frontal', desc: 'front' },
+              { term: 'Parietal', desc: 'top' },
+              { term: 'Temporal', desc: 'side' },
+              { term: 'Occipital', desc: 'back' },
+              { term: 'Zygomatic', desc: 'cheek' }
+            ],
+            itemsAr: [
+              'الفك العلوي',
+              'الفك السفلي',
+              'العظم الجبهي – الجزء الأمامي',
+              'العظم الجداري – الجزء العلوي',
+              'العظم الصدغي – الجزء الجانبي',
+              'العظم القذالي – الجزء الخلفي',
+              'العظم الوجني – عظم الخد'
+            ]
+          }
+        ],
+        imagePlaceholder: {
+          id: 'img-slide-16', slideRef: 'Slide 16', captionEn: 'Skull Bones', captionAr: 'صورة الشريحة 16 – عظام الجمجمة',
+          labels: [{ en: 'Zygomatic', ar: 'العظم الوجني' }, { en: 'Nasal', ar: 'العظم الأنفي' }, { en: 'Lacrimal', ar: 'العظم الدمعي' }, { en: 'Mandible', ar: 'الفك السفلي' }]
+        }
+      },
+      {
+        id: 'sec-11',
+        number: 11,
+        titleEn: 'The Vertebrae',
+        titleAr: 'الفقرات',
+        category: 'Vertebral Column',
+        blocks: [
+          {
+            id: 'b-11-1',
+            headingEn: 'Cervical Vertebrae',
+            headingAr: 'الفقرات العنقية',
+            itemsEn: [
+              { term: 'Cervical', desc: 'first 7' },
+              { term: 'The first is named the Atlas.' },
+              { term: 'The second is named the Axis.' },
+              { term: 'Named by number, 3–7 all others.' }
+            ],
+            itemsAr: [
+              'الفقرات العنقية – أول 7 فقرات',
+              'تُسمّى الفقرة الأولى Atlas (الأطلس).',
+              'تُسمّى الفقرة الثانية Axis (المحور).',
+              'تُسمّى الفقرات من الثالثة إلى السابعة بالأرقام.'
+            ]
+          },
+          {
+            id: 'b-11-2',
+            headingEn: 'Thoracic, Lumbar, Sacral & Coccyx',
+            headingAr: 'الفقرات الصدرية والقطنية والعجزية والعصعص',
+            itemsEn: [
+              { term: 'Thoracic (middle 12)', subNote: 'Ribs attach to the thoracic vertebrae.' },
+              { term: 'Lumbar (lower 5)' },
+              { term: 'Sacral', desc: '5 vertebrae fused at hips' },
+              { term: 'Coccyx', desc: '3 vertebrae fused' }
+            ],
+            itemsAr: [
+              'الفقرات الصدرية (12 فقرة وسطية) — تتصل الأضلاع بالفقرات الصدرية.',
+              'الفقرات القطنية (5 فقرات سفلية)',
+              'الفقرات العجزية – 5 فقرات ملتحمة عند منطقة الحوض',
+              'العصعص – 3 فقرات ملتحمة'
+            ]
+          }
+        ],
+        imagePlaceholder: {
+          id: 'img-slide-19',
+          slideRef: 'Slide 19',
+          captionEn: 'Vertebrae Diagram',
+          captionAr: 'صورة الشريحة 19 – الفقرات',
+          labels: [
+            { en: 'Vertebrae', ar: 'الفقرات' },
+            { en: 'Intervertebral disks', ar: 'الأقراص بين الفقرية' },
+            { en: 'Cervical vertebrae (7)', ar: 'الفقرات العنقية (7)' },
+            { en: 'Thoracic vertebrae (12)', ar: 'الفقرات الصدرية (12)' },
+            { en: 'Lumbar vertebrae (5)', ar: 'الفقرات القطنية (5)' },
+            { en: 'Sacrum (5 fused vertebrae)', ar: 'العَجُز (5 فقرات ملتحمة)' },
+            { en: 'Coccyx (3–5 fused vertebrae)', ar: 'العُصعُص (3–5 فقرات ملتحمة)' },
+            { en: 'Thoracic vertebra', ar: 'فقرة صدرية' },
+            { en: 'Centrum', ar: 'جسم الفقرة' },
+            { en: 'Spinal side view', ar: 'منظر جانبي للعمود الفقري' },
+            { en: 'Spinal process', ar: 'الناتئ الشوكي' },
+            { en: 'Vertebral arch', ar: 'القوس الفقري' },
+            { en: 'Vertebral foramen', ar: 'الثقب الفقري' },
+            { en: 'Transverse process', ar: 'الناتئ المستعرض' },
+            { en: 'Top view', ar: 'منظر علوي' }
+          ]
+        }
+      },
+      {
+        id: 'sec-12',
+        number: 12,
+        titleEn: 'Joints',
+        titleAr: 'المفصل',
+        category: 'Articulations & Joints',
+        blocks: [
+          {
+            id: 'b-12-1',
+            headingEn: 'Joint Definition',
+            headingAr: 'تعريف المفصل',
+            paragraphsEn: [
+              'A place where two bones meet.'
+            ],
+            paragraphsAr: [
+              'مكان تلتقي فيه عظمتان.'
+            ]
+          },
+          {
+            id: 'b-12-2',
+            headingEn: 'Types of joints',
+            headingAr: 'أنواع المفاصل',
+            itemsEn: [
+              { term: 'Cartilaginous joints (symphysis pubis)' },
+              { term: 'Fixed (fibrous) joints', desc: 'skull' },
+              { term: 'Semimovable (plane joints)', subNote: 'Vertebrae and ribs.' }
+            ],
+            itemsAr: [
+              'المفاصل الغضروفية (الارتفاق العاني)',
+              'المفاصل الثابتة (الليفية) – الجمجمة',
+              'المفاصل شبه المتحركة (المسطحة) — الفقرات والأضلاع.'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-13',
+        number: 13,
+        titleEn: 'Movable Joint (Synovial)',
+        titleAr: 'المفصل المتحرك (الزلالي)',
+        category: 'Articulations & Joints',
+        blocks: [
+          {
+            id: 'b-13-1',
+            headingEn: 'Movable Joint (Synovial)',
+            headingAr: 'المفصل المتحرك (الزلالي)',
+            paragraphsEn: [
+              'Articular bone surface covered by hyaline cartilage separated by joint cavity which lined by synovial membrane and protected by capsule.',
+              'Articular surface lubricated by synovial fluid.'
+            ],
+            paragraphsAr: [
+              'السطح المفصلي للعظم مغطّى بالغضروف الزجاجي، وتفصل بين الأسطح المفصلية فجوة مفصلية مبطّنة بغشاء زلالي ومحميّة بمحفظة مفصلية.',
+              'تُزَلَّق الأسطح المفصلية بواسطة السائل الزلالي.'
+            ]
+          }
+        ],
+        imagePlaceholder: {
+          id: 'img-slide-22',
+          slideRef: 'Slide 22',
+          captionEn: 'Synovial Joint Structure',
+          captionAr: 'صورة الشريحة 22 – تركيب المفصل الزلالي',
+          labels: [
+            { en: 'Bone', ar: 'عظم' },
+            { en: 'Articular cartilage', ar: 'الغضروف المفصلي' },
+            { en: 'Synovial membrane', ar: 'الغشاء الزلالي' },
+            { en: 'Articular capsule', ar: 'المحفظة المفصلية' },
+            { en: 'Joint cavity containing synovial fluid', ar: 'التجويف المفصلي المحتوي على السائل الزلالي' }
+          ]
+        }
+      },
+      {
+        id: 'sec-14',
+        number: 14,
+        titleEn: 'Synovial Joint Classification',
+        titleAr: 'تصنيف المفاصل الزلالية',
+        category: 'Articulations & Joints',
+        blocks: [
+          {
+            id: 'b-14-1',
+            headingEn: '1) Hinge Joint',
+            headingAr: '1) المفصل الرِّزّي',
+            itemsEn: [
+              { term: 'Elbow & knee (flexion-extension)' }
+            ],
+            itemsAr: [
+              'المرفق والركبة (الثني والبسط)'
+            ]
+          },
+          {
+            id: 'b-14-2',
+            headingEn: '2) Ball-and-Socket Joint',
+            headingAr: '2) المفصل الكروي الحُقّي',
+            itemsEn: [
+              { term: 'Hip & shoulder' },
+              { term: 'Movements', desc: 'Flexion – extension – abduction – adduction – medial rotation – circumduction' }
+            ],
+            itemsAr: [
+              'الورك والكتف',
+              'الثني – البسط – التبعيد – التقريب – الدوران الإنسي – الحركة الدائرية'
+            ]
+          },
+          {
+            id: 'b-14-3',
+            headingEn: '3) Pivot Joint',
+            headingAr: '3) المفصل المحوري',
+            itemsEn: [
+              { term: 'Atlanto-axial Joint (rotation only)' }
+            ],
+            itemsAr: [
+              'المفصل الأطلسي المحوري (الدوران فقط)'
+            ]
+          },
+          {
+            id: 'b-14-4',
+            headingEn: '4) Ellipsoid Joint',
+            headingAr: '4) المفصل الإهليلجي',
+            itemsEn: [
+              { term: 'Wrist & ankle' },
+              { term: 'Movements', desc: 'Flexion – extension – abduction – adduction' }
+            ],
+            itemsAr: [
+              'الرسغ والكاحل',
+              'الثني – البسط – التبعيد – التقريب'
+            ]
+          },
+          {
+            id: 'b-14-5',
+            headingEn: '5) Saddle Joint',
+            headingAr: '5) المفصل السرجي',
+            itemsEn: [
+              { term: 'Carpometacarpal Joint of thumb' },
+              { term: 'Movements', desc: 'Flexion – extension – abduction – adduction – rotation' }
+            ],
+            itemsAr: [
+              'المفصل الرسغي المشطي للإبهام',
+              'الثني – البسط – التبعيد – التقريب – الدوران'
+            ]
+          },
+          {
+            id: 'b-14-6',
+            headingEn: '6) Condyloid Joint',
+            headingAr: '6) المفصل اللقمي',
+            itemsEn: [
+              { term: 'Metacarpophalangeal Joint' },
+              { term: 'Movements', desc: 'Flexion – extension – abduction – adduction' }
+            ],
+            itemsAr: [
+              'المفصل السنعي السلامي',
+              'الثني – البسط – التبعيد – التقريب'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-15',
+        number: 15,
+        titleEn: 'Bursa',
+        titleAr: 'الجراب',
+        category: 'Connective Tissues',
+        blocks: [
+          {
+            id: 'b-15-1',
+            headingEn: 'Bursa',
+            headingAr: 'الجراب',
+            paragraphsEn: [
+              'A fluid-filled sac in the knee and shoulder joints to cushion the bones.'
+            ],
+            paragraphsAr: [
+              'كيس مملوء بالسائل في مفاصل الركبة والكتف، يعمل على تخفيف الاحتكاك وحماية العظام.'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-16',
+        number: 16,
+        titleEn: 'Ligaments',
+        titleAr: 'الرباط',
+        category: 'Connective Tissues',
+        blocks: [
+          {
+            id: 'b-16-1',
+            headingEn: 'Ligament Definition',
+            headingAr: 'تعريف الرباط',
+            paragraphsEn: [
+              'Tough, flexible bands of connective tissue holding bones together at joints.'
+            ],
+            paragraphsAr: [
+              'أشرطة قوية ومرنة من النسيج الضام تربط العظام ببعضها عند المفاصل.'
+            ]
+          },
+          {
+            id: 'b-16-2',
+            headingEn: 'Types of Ligament',
+            headingAr: 'أنواع الأربطة',
+            itemsEn: [
+              { term: 'Fibrous Ligament' },
+              { term: 'Elastic Ligament' }
+            ],
+            itemsAr: [
+              'الرباط الليفي',
+              'الرباط المرن'
+            ]
+          }
+        ],
+        imagePlaceholder: {
+          id: 'img-slide-27',
+          slideRef: 'Slide 27',
+          captionEn: 'Ligament Anatomy (Knee Joint Ligaments)',
+          captionAr: 'صورة الشريحة 27 – أربطة مفصل الركبة',
+          labels: [
+            { en: 'Ligament', ar: 'رباط' },
+            { en: 'Femur', ar: 'عظم الفخذ' },
+            { en: 'Lateral collateral ligament (LCL)', ar: 'الرباط الجانبي الوحشي' },
+            { en: 'Patella (kneecap)', ar: 'الرُّضفة (صابونة الركبة)' },
+            { en: 'Medial collateral ligament (MCL)', ar: 'الرباط الجانبي الإنسي' },
+            { en: 'Tibia', ar: 'القصبة (الظنبوب)' },
+            { en: 'Fibula', ar: 'الشظية' },
+            { en: 'Patellar ligament', ar: 'الرباط الرضفي' }
+          ]
+        }
+      },
+      {
+        id: 'sec-17',
+        number: 17,
+        titleEn: 'Tendons',
+        titleAr: 'الوتر',
+        category: 'Connective Tissues',
+        blocks: [
+          {
+            id: 'b-17-1',
+            headingEn: 'Tendon',
+            headingAr: 'الوتر',
+            paragraphsEn: [
+              'Tough inflexible bands of connective tissue attaching muscle to bone.'
+            ],
+            paragraphsAr: [
+              'أشرطة قوية غير مرنة من النسيج الضام تربط العضلات بالعظام.'
+            ]
+          }
+        ],
+        imagePlaceholder: {
+          id: 'img-slide-29',
+          slideRef: 'Slide 29',
+          captionEn: 'Tendon and Muscle Attachment',
+          captionAr: 'صورة الشريحة 29 – الوتر والعضلة والعظم',
+          labels: [
+            { en: 'Muscle', ar: 'عضلة' },
+            { en: 'Tendon', ar: 'وتر' },
+            { en: 'Bone', ar: 'عظم' },
+            { en: 'Ligament', ar: 'رباط' },
+            { en: 'Bone', ar: 'عظم' }
+          ]
+        }
+      },
+      {
+        id: 'sec-18',
+        number: 18,
+        titleEn: 'Muscles of the Human Body',
+        titleAr: 'عضلات جسم الإنسان',
+        category: 'Muscular System',
+        blocks: [
+          {
+            id: 'b-18-1',
+            paragraphsEn: [
+              'The muscles of the body produce movement by pulling, not pushing.'
+            ],
+            paragraphsAr: [
+              'تُنتج عضلات الجسم الحركة عن طريق السحب وليس الدفع.'
+            ]
+          },
+          {
+            id: 'b-18-2',
+            paragraphsEn: [
+              'If all your muscles pulled in one direction, you could lift almost 25 tons.'
+            ],
+            paragraphsAr: [
+              'إذا سحبت جميع عضلاتك باتجاه واحد، فستتمكن من رفع ما يقارب 25 طناً.'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-19',
+        number: 19,
+        titleEn: 'Types of Muscles',
+        titleAr: 'أنواع العضلات',
+        category: 'Muscular System',
+        blocks: [
+          {
+            id: 'b-19-1',
+            headingEn: 'Cardiac muscle',
+            headingAr: 'العضلة القلبية',
+            paragraphsEn: [
+              'Involuntary muscle of the heart wall.'
+            ],
+            paragraphsAr: [
+              'عضلة لا إرادية موجودة في جدار القلب.'
+            ]
+          },
+          {
+            id: 'b-19-2',
+            headingEn: 'Smooth muscle',
+            headingAr: 'العضلة الملساء',
+            paragraphsEn: [
+              'Involuntary muscle of the stomach, intestine, and blood vessels.'
+            ],
+            paragraphsAr: [
+              'عضلة لا إرادية موجودة في المعدة والأمعاء والأوعية الدموية.'
+            ]
+          },
+          {
+            id: 'b-19-3',
+            headingEn: 'Skeletal muscle',
+            headingAr: 'العضلة الهيكلية',
+            paragraphsEn: [
+              'Voluntary, striated muscles attached to bones.'
+            ],
+            paragraphsAr: [
+              'عضلات إرادية مخططة متصلة بالعظام.'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-20',
+        number: 20,
+        titleEn: 'Muscle Attachment (Origin and Insertion)',
+        titleAr: 'ارتباط العضلات',
+        category: 'Muscular System',
+        blocks: [
+          {
+            id: 'b-20-1',
+            headingEn: 'Origin',
+            headingAr: 'المنشأ',
+            paragraphsEn: [
+              'Point of attachment on the stationary (fixed) bone.'
+            ],
+            paragraphsAr: [
+              'نقطة اتصال العضلة بالعظم الثابت.'
+            ]
+          },
+          {
+            id: 'b-20-2',
+            headingEn: 'Insertion',
+            headingAr: 'الارتكاز',
+            paragraphsEn: [
+              'Point of attachment on the moving bone.'
+            ],
+            paragraphsAr: [
+              'نقطة اتصال العضلة بالعظم المتحرك.'
+            ]
+          }
+        ],
+        imagePlaceholder: {
+          id: 'img-slide-33',
+          slideRef: 'Slide 33',
+          captionEn: 'Origin and Insertion',
+          captionAr: 'صورة الشريحة 33 – Origin and Insertion',
+          labels: [
+            { en: 'Pelvis', ar: 'الحوض' },
+            { en: 'Femur', ar: 'عظم الفخذ' },
+            { en: 'Rectus femoris', ar: 'العضلة المستقيمة الفخذية' },
+            { en: 'Patella', ar: 'الرُّضفة' },
+            { en: 'Patellar tendon', ar: 'وتر الرُّضفة' },
+            { en: 'Tibia', ar: 'القصبة (الظنبوب)' },
+            { en: 'Origin', ar: 'المنشأ' },
+            { en: 'Insertion', ar: 'الارتكاز' }
+          ]
+        }
+      }
+    ];
+
+    /**
+     * PERSISTENT STATE MANAGEMENT (localStorage with safe fallback)
+     */
+    const STORAGE_KEYS = {
+      BOOKMARKS: 'anatomy_part1_bookmarks_v1',
+      REVIEWED: 'anatomy_part1_reviewed_v1',
+      PREFS: 'anatomy_part1_prefs_v1',
+      IMAGES: 'anatomy_part1_uploaded_images_v1'
+    };
+
+    let appState = {
+      bookmarks: {},
+      reviewed: {},
+      readingMode: false,
+      hideTranslationControls: false,
+      activeFilter: 'all',
+      searchQuery: '',
+      uploadedImages: {} // placeholderId -> base64 dataURL
+    };
+
+    function loadStateFromStorage() {
+      try {
+        const savedBookmarks = localStorage.getItem(STORAGE_KEYS.BOOKMARKS);
+        if (savedBookmarks) appState.bookmarks = JSON.parse(savedBookmarks);
+
+        const savedReviewed = localStorage.getItem(STORAGE_KEYS.REVIEWED);
+        if (savedReviewed) appState.reviewed = JSON.parse(savedReviewed);
+
+        const savedPrefs = localStorage.getItem(STORAGE_KEYS.PREFS);
+        if (savedPrefs) {
+          const prefs = JSON.parse(savedPrefs);
+          appState.readingMode = !!prefs.readingMode;
+          appState.hideTranslationControls = !!prefs.hideTranslationControls;
+        }
+
+        const savedImages = localStorage.getItem(STORAGE_KEYS.IMAGES);
+        if (savedImages) appState.uploadedImages = JSON.parse(savedImages);
+      } catch (err) {
+        console.warn('Could not read from localStorage:', err);
+      }
+    }
+
+    function saveStateToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.BOOKMARKS, JSON.stringify(appState.bookmarks));
+        localStorage.setItem(STORAGE_KEYS.REVIEWED, JSON.stringify(appState.reviewed));
+        localStorage.setItem(STORAGE_KEYS.PREFS, JSON.stringify({
+          readingMode: appState.readingMode,
+          hideTranslationControls: appState.hideTranslationControls
+        }));
+      } catch (err) {
+        console.warn('Could not save state to localStorage:', err);
+      }
+    }
+
+    function saveImagesToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.IMAGES, JSON.stringify(appState.uploadedImages));
+        return true;
+      } catch (err) {
+        showToast('Image preview active for this session (browser storage quota reached).', 'info');
+        return false;
+      }
+    }
+
+    /**
+     * TOAST NOTIFICATION HELPER
+     */
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgClass = type === 'success'
+        ? 'bg-slate-900 text-white border-teal-500/40'
+        : 'bg-blue-950 text-blue-100 border-blue-400/40';
+
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-2.5 rounded-xl border shadow-lg text-xs font-semibold transition-all duration-300 ${bgClass}`;
+      toast.innerHTML = `
+        <span class="w-2 h-2 rounded-full ${type === 'success' ? 'bg-teal-400' : 'bg-blue-400'}"></span>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 2800);
+    }
+
+    /**
+     * SEARCH HIGHLIGHT HELPER
+     */
+    function highlightText(text, query) {
+      if (!text) return '';
+      if (!query || !query.trim()) return text;
+      const escaped = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`(${escaped})`, 'gi');
+      return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+    }
+
+    /**
+     * RENDER SIDEBAR TABLE OF CONTENTS
+     */
+    function renderTableOfContents() {
+      const navList = document.getElementById('toc-nav-list');
+      navList.innerHTML = LECTURE_SECTIONS.map(sec => {
+        const isReviewed = !!appState.reviewed[sec.id];
+        const isBookmarked = !!appState.bookmarks[sec.id];
+        const hasDiagram = !!sec.imagePlaceholder;
+
+        return `
+          <a href="#${sec.id}" data-toc-link="${sec.id}"
+            class="toc-item group flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="toc-num w-5 h-5 rounded-lg text-[11px] font-bold flex items-center justify-center shrink-0 ${
+                isReviewed
+                  ? 'bg-teal-600 text-white'
+                  : 'bg-slate-100 text-slate-600 group-hover:bg-blue-100 group-hover:text-blue-800'
+              }">
+                ${isReviewed ? '✓' : sec.number}
+              </span>
+              <span class="truncate font-semibold">${sec.titleEn}</span>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              ${hasDiagram ? `
+                <span class="w-4 h-4 rounded bg-teal-50 text-teal-600 flex items-center justify-center" title="Contains Anatomical Image Placeholder">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </span>
+              ` : ''}
+              ${isBookmarked ? `
+                <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
+                </svg>
+              ` : ''}
+            </div>
+          </a>
+        `;
+      }).join('');
+
+      // Close mobile drawer when clicking a link
+      navList.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          closeMobileDrawer();
+        });
+      });
+    }
+
+    /**
+     * RENDER INDIVIDUAL INFORMATION BLOCK
+     */
+    function renderInfoBlock(block, query) {
+      const transId = `trans-${block.id}`;
+
+      // English Heading + Badge
+      let headingHtml = '';
+      if (block.headingEn) {
+        headingHtml = `
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h4 class="text-base font-bold text-slate-900">
+              ${highlightText(block.headingEn, query)}
+            </h4>
+            ${block.badgeEn ? `
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                ${highlightText(block.badgeEn, query)}
+              </span>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      // English Paragraphs
+      let paragraphsHtml = '';
+      if (block.paragraphsEn && block.paragraphsEn.length > 0) {
+        paragraphsHtml = `
+          <div class="space-y-2.5 text-slate-700 text-sm sm:text-base leading-relaxed">
+            ${block.paragraphsEn.map(p => `<p class="font-medium">${highlightText(p, query)}</p>`).join('')}
+          </div>
+        `;
+      }
+
+      // English List Items
+      let itemsHtml = '';
+      if (block.itemsEn && block.itemsEn.length > 0) {
+        itemsHtml = `
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-1">
+            ${block.itemsEn.map(item => `
+              <li class="flex items-start gap-2.5 bg-slate-50/90 hover:bg-blue-50/40 border border-slate-200/70 rounded-xl px-3.5 py-2.5 transition">
+                <span class="w-2 h-2 rounded-full bg-blue-600 mt-2 shrink-0"></span>
+                <div class="text-sm leading-snug">
+                  <span class="font-bold text-slate-900">${highlightText(item.term, query)}</span>
+                  ${item.desc ? `<span class="text-slate-600 font-medium"> – ${highlightText(item.desc, query)}</span>` : ''}
+                  ${item.subNote ? `<div class="text-xs text-slate-500 mt-1 font-medium">${highlightText(item.subNote, query)}</div>` : ''}
+                </div>
+              </li>
+            `).join('')}
+          </ul>
+        `;
+      }
+
+      // English Footer Note
+      let noteHtml = '';
+      if (block.noteEn) {
+        noteHtml = `
+          <div class="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-teal-800 bg-teal-50/80 border border-teal-200/70 px-3 py-1.5 rounded-lg">
+            <svg class="w-3.5 h-3.5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>${highlightText(block.noteEn, query)}</span>
+          </div>
+        `;
+      }
+
+      // Arabic Translation Content
+      let arabicContentHtml = '';
+      if (block.headingAr) {
+        arabicContentHtml += `
+          <div class="flex items-center justify-between gap-2 mb-2 pb-1.5 border-b border-teal-200/60">
+            <span class="font-bold text-base text-slate-900">${highlightText(block.headingAr, query)}</span>
+            ${block.badgeAr ? `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-teal-100 text-teal-900">${highlightText(block.badgeAr, query)}</span>` : ''}
+          </div>
+        `;
+      }
+      if (block.paragraphsAr && block.paragraphsAr.length > 0) {
+        arabicContentHtml += `
+          <div class="space-y-2 text-slate-800 text-base font-medium">
+            ${block.paragraphsAr.map(p => `<p>${highlightText(p, query)}</p>`).join('')}
+          </div>
+        `;
+      }
+      if (block.itemsAr && block.itemsAr.length > 0) {
+        arabicContentHtml += `
+          <ul class="space-y-1.5 mt-1 text-slate-800 text-sm sm:text-base font-medium">
+            ${block.itemsAr.map(arItem => `
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-teal-600 shrink-0"></span>
+                <span>${highlightText(arItem, query)}</span>
+              </li>
+            `).join('')}
+          </ul>
+        `;
+      }
+      if (block.noteAr) {
+        arabicContentHtml += `
+          <div class="mt-2 text-xs font-bold text-teal-900 bg-teal-100/70 inline-block px-2.5 py-1 rounded-md">
+            ${highlightText(block.noteAr, query)}
+          </div>
+        `;
+      }
+
+      return `
+        <div class="info-block-card bg-white rounded-xl border border-slate-200/90 p-4 sm:p-5 shadow-2xs hover:border-slate-300 transition">
+          ${headingHtml}
+          ${paragraphsHtml}
+          ${itemsHtml}
+          ${noteHtml}
+
+          <!-- Expandable Arabic Translation Button -->
+          <div class="translation-control-wrapper mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <button type="button" onclick="toggleTranslation('${transId}')" id="btn-${transId}"
+              class="translation-toggle-btn inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-800 border border-slate-200/80 transition cursor-pointer">
+              <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+              </svg>
+              <span class="btn-label">Show Arabic Translation</span>
+            </button>
+            <span class="text-[11px] text-slate-400 font-medium">عربي RTL</span>
+          </div>
+
+          <!-- Collapsible Arabic Translation Container -->
+          <div id="${transId}" class="translation-collapse">
+            <div class="translation-inner">
+              <div class="arabic-text mt-3 bg-gradient-to-l from-teal-50/70 via-slate-50 to-blue-50/40 border-r-4 border-teal-600 rounded-xl p-4 shadow-inner">
+                ${arabicContentHtml}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * RENDER ANATOMICAL IMAGE PLACEHOLDER & EXTRACTED TERMINOLOGY SUBSECTION
+     */
+    function renderImagePlaceholder(placeholder, query) {
+      const uploadedDataUrl = appState.uploadedImages[placeholder.id] || null;
+      const externalImage = {
+        'img-slide-3': 'slide_3_image.jpg',
+        'img-slide-8': 'slide_8_image.jpeg',
+        'img-slide-10': 'slide_10_image.png',
+        'img-slide-14': 'slide_14_image.jpg',
+        'img-slide-16': 'slide_16_image.jpeg',
+        'img-slide-19': 'slide_19_image.png',
+        'img-slide-22': 'slide_22_image.jpg',
+        'img-slide-27': 'slide_27_image.jpeg',
+        'img-slide-29': 'slide_29_image.jpg',
+        'img-slide-33': 'slide_33_image.jpeg'
+      }[placeholder.id] || null;
+      const imageSrc = uploadedDataUrl || externalImage;
+      const labelsTransId = `trans-labels-${placeholder.id}`;
+
+      return `
+        <div class="mt-6 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/70 overflow-hidden transition-all" id="placeholder-box-${placeholder.id}">
+          <!-- Top Placeholder Banner -->
+          <div class="bg-slate-100/90 border-b border-slate-200/80 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-slate-800 text-white">
+                Anatomical Image Placeholder
+              </span>
+              <span class="text-xs font-bold text-teal-800 bg-teal-100/80 px-2 py-0.5 rounded-md">
+                ${placeholder.slideRef}
+              </span>
+            </div>
+            <span class="text-xs font-medium text-slate-500">
+              ${imageSrc ? 'Diagram Available' : 'Image will be added later'}
+            </span>
+          </div>
+
+          <!-- Visual Frame / Uploaded Image Preview Area -->
+          <div class="p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
+            ${imageSrc ? `
+              <div class="w-full max-w-2xl mx-auto">
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                  <img src="${imageSrc}" alt="${placeholder.captionEn}" class="max-h-96 w-auto mx-auto rounded-lg object-contain" />
+                </div>
+                <p class="mt-3 text-sm font-bold text-slate-800">${highlightText(placeholder.captionEn, query)}</p>
+                <div class="mt-3 flex items-center justify-center gap-2">
+                  <label for="file-${placeholder.id}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition cursor-pointer shadow-2xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                    Replace Image
+                  </label>
+                  <button type="button" onclick="removeUploadedImage('${placeholder.id}')"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition">
+                    Remove Image
+                  </button>
+                </div>
+              </div>
+            ` : `
+              <div class="max-w-md mx-auto py-4">
+                <!-- Subtle Medical / Anatomy Diagram SVG Icon -->
+                <div class="w-16 h-16 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-center mx-auto mb-3 text-blue-700">
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                  Anatomical Image Placeholder
+                </div>
+                <h5 class="text-base sm:text-lg font-extrabold text-slate-900 mt-1">
+                  ${highlightText(placeholder.captionEn, query)}
+                </h5>
+                <p class="text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200/80 inline-block px-3 py-1 rounded-full mt-2">
+                  Image will be added later
+                </p>
+                <div class="mt-4">
+                  <label for="file-${placeholder.id}"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-blue-50 text-blue-800 border border-blue-300 shadow-2xs transition cursor-pointer">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                    <span>[ Replace / Upload Image ]</span>
+                  </label>
+                </div>
+              </div>
+            `}
+            <input id="file-${placeholder.id}" type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, '${placeholder.id}')" />
+          </div>
+
+          <!-- Extracted Image Labels & Terminology Subsection -->
+          <div class="bg-white border-t border-slate-200/90 p-4 sm:p-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
+                <h6 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-800">
+                  Image Labels &amp; Terminology
+                </h6>
+              </div>
+              <span class="text-xs font-semibold text-slate-500">${placeholder.labels.length} anatomical terms</span>
+            </div>
+
+            <!-- English Labels List -->
+            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+              ${placeholder.labels.map(lbl => `
+                <li class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200/70 text-xs sm:text-sm font-semibold text-slate-800">
+                  <span class="w-1.5 h-1.5 rounded-full bg-teal-600 shrink-0"></span>
+                  <span>${highlightText(lbl.en, query)}</span>
+                </li>
+              `).join('')}
+            </ul>
+
+            <!-- Separate Translation Toggle for Image Labels -->
+            <div class="translation-control-wrapper mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <button type="button" onclick="toggleTranslation('${labelsTransId}')" id="btn-${labelsTransId}"
+                class="translation-toggle-btn inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 transition cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-teal-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                </svg>
+                <span class="btn-label">Show Arabic Translation</span>
+              </button>
+              <span class="text-[11px] text-slate-400 font-medium">مصطلحات الصورة</span>
+            </div>
+
+            <!-- Collapsible Arabic Labels Panel -->
+            <div id="${labelsTransId}" class="translation-collapse">
+              <div class="translation-inner">
+                <div class="arabic-text mt-3 bg-teal-50/60 border-r-4 border-teal-600 rounded-xl p-4">
+                  <div class="text-xs font-bold text-teal-900 mb-2 pb-1 border-b border-teal-200/60">
+                    [${highlightText(placeholder.captionAr, query)}] — مصطلحات الصورة:
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    ${placeholder.labels.map(lbl => `
+                      <div class="flex items-center justify-between gap-2 bg-white/90 px-3 py-1.5 rounded-lg border border-teal-200/60 text-sm">
+                        <span class="font-bold text-slate-900">${highlightText(lbl.ar, query)}</span>
+                        <span class="text-xs text-slate-500 font-sans" dir="ltr">${highlightText(lbl.en, query)}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * CHECK IF SECTION MATCHES SEARCH QUERY
+     */
+    function sectionMatchesQuery(sec, query) {
+      if (!query) return true;
+      const q = query.toLowerCase();
+
+      if (sec.titleEn.toLowerCase().includes(q) || sec.titleAr.toLowerCase().includes(q)) return true;
+
+      for (const b of sec.blocks) {
+        if (b.headingEn && b.headingEn.toLowerCase().includes(q)) return true;
+        if (b.headingAr && b.headingAr.toLowerCase().includes(q)) return true;
+        if (b.badgeEn && b.badgeEn.toLowerCase().includes(q)) return true;
+        if (b.noteEn && b.noteEn.toLowerCase().includes(q)) return true;
+        if (b.paragraphsEn && b.paragraphsEn.some(p => p.toLowerCase().includes(q))) return true;
+        if (b.paragraphsAr && b.paragraphsAr.some(p => p.toLowerCase().includes(q))) return true;
+        if (b.itemsEn && b.itemsEn.some(it =>
+          (it.term && it.term.toLowerCase().includes(q)) ||
+          (it.desc && it.desc.toLowerCase().includes(q)) ||
+          (it.subNote && it.subNote.toLowerCase().includes(q))
+        )) return true;
+        if (b.itemsAr && b.itemsAr.some(it => it.toLowerCase().includes(q))) return true;
+      }
+
+      if (sec.imagePlaceholder) {
+        const ip = sec.imagePlaceholder;
+        if (ip.captionEn.toLowerCase().includes(q) || ip.captionAr.toLowerCase().includes(q)) return true;
+        if (ip.labels.some(l => l.en.toLowerCase().includes(q) || l.ar.toLowerCase().includes(q))) return true;
+      }
+
+      return false;
+    }
+
+    /**
+     * RENDER ALL LECTURE SECTIONS
+     */
+    function renderLectureSections() {
+      const container = document.getElementById('lecture-sections-container');
+      const emptyState = document.getElementById('empty-filter-state');
+      const query = appState.searchQuery.trim();
+
+      const filteredSections = LECTURE_SECTIONS.filter(sec => {
+        if (appState.activeFilter === 'bookmarked' && !appState.bookmarks[sec.id]) return false;
+        if (appState.activeFilter === 'unreviewed' && appState.reviewed[sec.id]) return false;
+        if (appState.activeFilter === 'diagrams' && !sec.imagePlaceholder) return false;
+        return sectionMatchesQuery(sec, query);
+      });
+
+      // Update search count badge
+      const searchBadge = document.getElementById('search-count-badge');
+      const clearSearchBtn = document.getElementById('clear-search-btn');
+      if (query.length > 0) {
+        searchBadge.textContent = `${filteredSections.length} match${filteredSections.length === 1 ? '' : 'es'}`;
+        searchBadge.classList.remove('hidden');
+        clearSearchBtn.classList.remove('hidden');
+      } else {
+        searchBadge.classList.add('hidden');
+        clearSearchBtn.classList.add('hidden');
+      }
+
+      if (filteredSections.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      container.innerHTML = filteredSections.map(sec => {
+        const isReviewed = !!appState.reviewed[sec.id];
+        const isBookmarked = !!appState.bookmarks[sec.id];
+
+        return `
+          <article id="${sec.id}" data-section-id="${sec.id}"
+            class="lecture-section-card scroll-mt-32 rounded-2xl bg-white border transition-all duration-200 shadow-xs overflow-hidden ${
+              isReviewed ? 'border-teal-500/60 ring-1 ring-teal-500/20' : 'border-slate-200/90'
+            }">
+            
+            <!-- Section Header Bar -->
+            <div class="px-5 sm:px-6 py-4 bg-gradient-to-r ${
+              isReviewed ? 'from-teal-50/70 via-white to-white' : 'from-slate-50/90 via-white to-white'
+            } border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-3">
+              
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl font-extrabold text-sm flex items-center justify-center shrink-0 shadow-2xs ${
+                  isReviewed
+                    ? 'bg-teal-600 text-white'
+                    : 'bg-slate-900 text-white'
+                }">
+                  ${sec.number}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-blue-700">${sec.category}</span>
+                    ${isReviewed ? `
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800">
+                        ✓ Reviewed
+                      </span>
+                    ` : ''}
+                  </div>
+                  <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
+                    ${highlightText(sec.titleEn, query)}
+                  </h3>
+                </div>
+              </div>
+
+              <!-- Section Study Actions: Bookmark & Mark as Reviewed -->
+              <div class="flex items-center gap-2">
+                <!-- Bookmark Toggle Button -->
+                <button type="button" onclick="toggleBookmark('${sec.id}')"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition cursor-pointer ${
+                    isBookmarked
+                      ? 'bg-amber-50 text-amber-800 border-amber-300'
+                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                  }"
+                  title="${isBookmarked ? 'Remove Bookmark' : 'Bookmark this section'}">
+                  <svg class="w-3.5 h-3.5 ${isBookmarked ? 'text-amber-500 fill-current' : 'text-slate-400'}" viewBox="0 0 20 20" fill="${isBookmarked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8">
+                    <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
+                  </svg>
+                  <span class="hidden sm:inline">${isBookmarked ? 'Bookmarked' : 'Bookmark'}</span>
+                </button>
+
+                <!-- Mark as Reviewed Button -->
+                <button type="button" onclick="toggleReviewed('${sec.id}')"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition cursor-pointer ${
+                    isReviewed
+                      ? 'bg-teal-600 text-white border-teal-600 hover:bg-teal-700'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-teal-50 hover:text-teal-800 hover:border-teal-300'
+                  }">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span>${isReviewed ? 'Reviewed' : 'Mark as Reviewed'}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Section Body: Individual Info Blocks + Optional Image Placeholder -->
+            <div class="p-5 sm:p-6 space-y-4 bg-slate-50/30">
+              ${sec.blocks.map(block => renderInfoBlock(block, query)).join('')}
+              ${sec.imagePlaceholder ? renderImagePlaceholder(sec.imagePlaceholder, query) : ''}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    /**
+     * TRANSLATION ACCORDION CONTROLS
+     */
+    window.toggleTranslation = function(transId) {
+      const panel = document.getElementById(transId);
+      const btn = document.getElementById(`btn-${transId}`);
+      if (!panel) return;
+
+      const isOpen = panel.classList.contains('open');
+      if (isOpen) {
+        panel.classList.remove('open');
+        if (btn) {
+          const label = btn.querySelector('.btn-label');
+          if (label) label.textContent = 'Show Arabic Translation';
+        }
+      } else {
+        panel.classList.add('open');
+        if (btn) {
+          const label = btn.querySelector('.btn-label');
+          if (label) label.textContent = 'Hide Arabic Translation';
+        }
+      }
+    };
+
+    function expandAllArabicTranslations() {
+      document.querySelectorAll('.translation-collapse').forEach(panel => {
+        panel.classList.add('open');
+      });
+      document.querySelectorAll('.translation-toggle-btn .btn-label, #btn-header-trans .btn-label').forEach(lbl => {
+        lbl.textContent = 'Hide Arabic Translation';
+      });
+      showToast('Expanded all Arabic translations');
+    }
+
+    function collapseAllArabicTranslations() {
+      document.querySelectorAll('.translation-collapse').forEach(panel => {
+        panel.classList.remove('open');
+      });
+      document.querySelectorAll('.translation-toggle-btn .btn-label, #btn-header-trans .btn-label').forEach(lbl => {
+        lbl.textContent = 'Show Arabic Translation';
+      });
+      showToast('Collapsed all Arabic translations');
+    }
+
+    /**
+     * BOOKMARK & REVIEWED HANDLERS
+     */
+    window.toggleBookmark = function(secId) {
+      if (appState.bookmarks[secId]) {
+        delete appState.bookmarks[secId];
+        showToast('Bookmark removed');
+      } else {
+        appState.bookmarks[secId] = true;
+        showToast('Section bookmarked for review');
+      }
+      saveStateToStorage();
+      updateProgressStatsAndFilters();
+      renderTableOfContents();
+      renderLectureSections();
+    };
+
+    window.toggleReviewed = function(secId) {
+      if (appState.reviewed[secId]) {
+        delete appState.reviewed[secId];
+        showToast('Section marked as unreviewed');
+      } else {
+        appState.reviewed[secId] = true;
+        showToast('Section marked as reviewed ✓');
+      }
+      saveStateToStorage();
+      updateProgressStatsAndFilters();
+      renderTableOfContents();
+      renderLectureSections();
+    };
+
+    /**
+     * UPDATE COUNTERS & PROGRESS INDICATORS
+     */
+    function updateProgressStatsAndFilters() {
+      const total = LECTURE_SECTIONS.length;
+      const reviewedCount = Object.keys(appState.reviewed).length;
+      const bookmarkedCount = Object.keys(appState.bookmarks).length;
+      const unreviewedCount = total - reviewedCount;
+      const pct = Math.round((reviewedCount / total) * 100);
+
+      document.getElementById('reviewed-counter-text').textContent = `${reviewedCount} / ${total}`;
+      document.getElementById('reviewed-progress-bar').style.width = `${pct}%`;
+      document.getElementById('sidebar-completion-summary').textContent = `${pct}% Reviewed (${reviewedCount}/${total})`;
+
+      document.getElementById('count-all').textContent = `(${total})`;
+      document.getElementById('count-bookmarked').textContent = `(${bookmarkedCount})`;
+      document.getElementById('count-unreviewed').textContent = `(${unreviewedCount})`;
+    }
+
+    /**
+     * IMAGE UPLOAD & PERSISTENT LOCAL PREVIEW HANDLERS
+     */
+    window.handleImageUpload = function(event, placeholderId) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showToast('Please select a valid image file (PNG, JPG, WebP, SVG).', 'info');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Compress/resize via canvas if large so it fits comfortably in localStorage
+        const img = new Image();
+        img.onload = function() {
+          const maxDim = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.84);
+          appState.uploadedImages[placeholderId] = optimizedDataUrl;
+          saveImagesToStorage();
+          renderLectureSections();
+          showToast('Anatomical image added to lecture placeholder');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.removeUploadedImage = function(placeholderId) {
+      delete appState.uploadedImages[placeholderId];
+      saveImagesToStorage();
+      renderLectureSections();
+      showToast('Image removed; placeholder restored');
+    };
+
+    /**
+     * RESET FILTERS & SEARCH
+     */
+    window.resetFiltersAndSearch = function() {
+      appState.activeFilter = 'all';
+      appState.searchQuery = '';
+      document.getElementById('anatomical-search').value = '';
+      updateFilterTabStyles();
+      renderLectureSections();
+    };
+
+    function updateFilterTabStyles() {
+      document.querySelectorAll('.filter-tab-btn').forEach(btn => {
+        const filter = btn.getAttribute('data-filter');
+        if (filter === appState.activeFilter) {
+          btn.className = 'filter-tab-btn px-2.5 py-1 rounded-lg font-semibold bg-slate-900 text-white transition flex items-center gap-1';
+        } else {
+          btn.className = 'filter-tab-btn px-2.5 py-1 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition flex items-center gap-1';
+        }
+      });
+    }
+
+    /**
+     * APPLY READING MODE & TRANSLATION VISIBILITY PREFERENCES
+     */
+    function applyPreferencesUI() {
+      // Reading mode
+      if (appState.readingMode) {
+        document.body.classList.add('reading-mode');
+        const btn = document.getElementById('reading-mode-btn');
+        btn.classList.add('bg-slate-900', 'text-white', 'border-slate-900');
+        btn.classList.remove('bg-white', 'text-slate-700');
+        document.getElementById('reading-mode-label').textContent = 'Exit Reading Mode';
+      } else {
+        document.body.classList.remove('reading-mode');
+        const btn = document.getElementById('reading-mode-btn');
+        btn.classList.remove('bg-slate-900', 'text-white', 'border-slate-900');
+        btn.classList.add('bg-white', 'text-slate-700');
+        document.getElementById('reading-mode-label').textContent = 'Reading Mode';
+      }
+
+      // Hide Arabic translation controls
+      const toggleTransLabel = document.getElementById('toggle-translation-buttons-label');
+      if (appState.hideTranslationControls) {
+        document.body.classList.add('hide-translations');
+        toggleTransLabel.textContent = 'Show Arabic Controls';
+        collapseAllArabicTranslations();
+      } else {
+        document.body.classList.remove('hide-translations');
+        toggleTransLabel.textContent = 'Hide Arabic Controls';
+      }
+    }
+
+    /**
+     * MOBILE SIDEBAR DRAWER CONTROLS
+     */
+    function openMobileDrawer() {
+      const sidebar = document.getElementById('sidebar-container');
+      const backdrop = document.getElementById('mobile-drawer-backdrop');
+      sidebar.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+    }
+
+    function closeMobileDrawer() {
+      const sidebar = document.getElementById('sidebar-container');
+      const backdrop = document.getElementById('mobile-drawer-backdrop');
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    }
+
+    /**
+     * SCROLL SPY & PROGRESS BAR
+     */
+    function handleWindowScroll() {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollPct = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+      document.getElementById('scroll-progress-bar').style.width = `${scrollPct}%`;
+
+      // Back to top button visibility
+      const backToTopBtn = document.getElementById('back-to-top-btn');
+      if (scrollTop > 400) {
+        backToTopBtn.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+      } else {
+        backToTopBtn.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+      }
+
+      // Active section highlighting in sidebar
+      const sections = document.querySelectorAll('.lecture-section-card');
+      let currentActiveId = null;
+      sections.forEach(sec => {
+        const rect = sec.getBoundingClientRect();
+        if (rect.top <= 180) {
+          currentActiveId = sec.getAttribute('data-section-id');
+        }
+      });
+
+      if (!currentActiveId && sections.length > 0) {
+        currentActiveId = sections[0].getAttribute('data-section-id');
+      }
+
+      document.querySelectorAll('#toc-nav-list a').forEach(link => {
+        const linkSecId = link.getAttribute('data-toc-link');
+        if (linkSecId === currentActiveId) {
+          link.classList.add('bg-blue-50', 'text-blue-900', 'ring-1', 'ring-blue-200');
+          link.classList.remove('text-slate-600');
+        } else {
+          link.classList.remove('bg-blue-50', 'text-blue-900', 'ring-1', 'ring-blue-200');
+          link.classList.add('text-slate-600');
+        }
+      });
+    }
+
+    /**
+     * INITIALIZE APPLICATION
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStateFromStorage();
+      updateProgressStatsAndFilters();
+      renderTableOfContents();
+      renderLectureSections();
+      applyPreferencesUI();
+      handleWindowScroll();
+
+      // Search input event
+      const searchInput = document.getElementById('anatomical-search');
+      searchInput.addEventListener('input', (e) => {
+        appState.searchQuery = e.target.value;
+        renderLectureSections();
+      });
+
+      document.getElementById('clear-search-btn').addEventListener('click', () => {
+        appState.searchQuery = '';
+        searchInput.value = '';
+        renderLectureSections();
+      });
+
+      // Filter tabs
+      document.querySelectorAll('.filter-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.activeFilter = btn.getAttribute('data-filter');
+          updateFilterTabStyles();
+          renderLectureSections();
+        });
+      });
+
+      // Global Arabic Expand / Collapse
+      document.getElementById('expand-all-arabic-btn').addEventListener('click', () => {
+        if (appState.hideTranslationControls) {
+          appState.hideTranslationControls = false;
+          applyPreferencesUI();
+          saveStateToStorage();
+        }
+        expandAllArabicTranslations();
+      });
+
+      document.getElementById('collapse-all-arabic-btn').addEventListener('click', () => {
+        collapseAllArabicTranslations();
+      });
+
+      // Toggle Arabic Translation Controls visibility
+      document.getElementById('toggle-translation-buttons-btn').addEventListener('click', () => {
+        appState.hideTranslationControls = !appState.hideTranslationControls;
+        saveStateToStorage();
+        applyPreferencesUI();
+        showToast(appState.hideTranslationControls ? 'Pure English view enabled' : 'Arabic translation controls enabled');
+      });
+
+      // Reading Mode Toggle
+      document.getElementById('reading-mode-btn').addEventListener('click', () => {
+        appState.readingMode = !appState.readingMode;
+        saveStateToStorage();
+        applyPreferencesUI();
+        showToast(appState.readingMode ? 'Reading Mode activated' : 'Standard Study view restored');
+      });
+
+      // Mobile drawer events
+      document.getElementById('mobile-menu-btn').addEventListener('click', openMobileDrawer);
+      document.getElementById('close-mobile-menu-btn').addEventListener('click', closeMobileDrawer);
+      document.getElementById('mobile-drawer-backdrop').addEventListener('click', closeMobileDrawer);
+
+      // Back to top
+      document.getElementById('back-to-top-btn').addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Reset progress modal
+      const resetModal = document.getElementById('reset-modal');
+      document.getElementById('reset-progress-btn').addEventListener('click', () => {
+        resetModal.classList.remove('hidden');
+        resetModal.classList.add('flex');
+      });
+      document.getElementById('cancel-reset-btn').addEventListener('click', () => {
+        resetModal.classList.add('hidden');
+        resetModal.classList.remove('flex');
+      });
+      document.getElementById('confirm-reset-btn').addEventListener('click', () => {
+        appState.bookmarks = {};
+        appState.reviewed = {};
+        appState.uploadedImages = {};
+        localStorage.removeItem(STORAGE_KEYS.BOOKMARKS);
+        localStorage.removeItem(STORAGE_KEYS.REVIEWED);
+        localStorage.removeItem(STORAGE_KEYS.IMAGES);
+        updateProgressStatsAndFilters();
+        renderTableOfContents();
+        renderLectureSections();
+        resetModal.classList.add('hidden');
+        resetModal.classList.remove('flex');
+        showToast('All study progress and custom images have been reset');
+      });
+
+      // Scroll listener
+      window.addEventListener('scroll', handleWindowScroll, { passive: true });
+    });
+  </script>
+</body>
+</html>
